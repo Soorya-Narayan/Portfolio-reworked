@@ -142,6 +142,13 @@ function App() {
       link: "https://github.com/Soorya-Narayan/Lyrics-Generator", 
       desc: "This project features a state-of-the-art yet straightforward lyrics generation model.", 
       tech: "Python, Machine Learning, Jupyter Notebook" 
+    },
+    { 
+      id: 'win95_portfolio', 
+      name: "Windows 95 Retro Portfolio", 
+      link: "https://github.com/Soorya-Narayan/Portfolio-reworked", 
+      desc: "A high-fidelity, interactive web-based portfolio that replicates the classic Windows 95/98 desktop experience, featuring draggable windows, system animations, and authentic retro aesthetics.", 
+      tech: "React 19, Vite, Tailwind CSS v4, JavaScript" 
     }
   ]
 
