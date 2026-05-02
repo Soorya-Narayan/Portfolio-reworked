@@ -1,35 +1,66 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-function Window({ title, children, icon, onClose, initialWidth = 600, initialHeight = 400, initialX, initialY, minWidth = 300, minHeight = 200, zIndex = 10 }) {
-  const [size, setSize] = useState({ width: initialWidth, height: initialHeight })
+function Window({ title, children, icon, onClose, initialWidth = 600, initialHeight = 400, initialX, initialY, minWidth = 280, minHeight = 200, zIndex = 10 }) {
+  const isMobile = window.innerWidth < 768
+  const defaultWidth = isMobile ? window.innerWidth - 20 : initialWidth
+  const defaultHeight = isMobile ? window.innerHeight - 80 : initialHeight
+  
+  const [size, setSize] = useState({ width: defaultWidth, height: defaultHeight })
   const [pos, setPos] = useState({ 
-    x: initialX ?? (window.innerWidth / 2 - initialWidth / 2), 
-    y: initialY ?? (window.innerHeight / 2 - initialHeight / 2) 
+    x: initialX ?? (window.innerWidth / 2 - defaultWidth / 2), 
+    y: initialY ?? (isMobile ? 10 : window.innerHeight / 2 - defaultHeight / 2) 
   })
   const [isResizing, setIsResizing] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const windowRef = useRef(null)
 
-  const startResizing = (e) => { e.preventDefault(); e.stopPropagation(); setIsResizing(true); }
-  const startDragging = (e) => { if (e.target.closest('.win-button')) return; setIsDragging(true); setDragStart({ x: e.clientX - pos.x, y: e.clientY - pos.y }); }
+  const startResizing = (e) => { 
+    if (isMobile) return; 
+    e.preventDefault(); 
+    e.stopPropagation(); 
+    setIsResizing(true); 
+  }
+  const startDragging = (e) => { 
+    if (e.target.closest('.win-button')) return; 
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    setIsDragging(true); 
+    setDragStart({ x: clientX - pos.x, y: clientY - pos.y }); 
+  }
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (isResizing) {
+    const handleMove = (e) => {
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      
+      if (isResizing && !isMobile) {
         const rect = windowRef.current.getBoundingClientRect()
-        setSize({ width: Math.max(e.clientX - rect.left, minWidth), height: Math.max(e.clientY - rect.top, minHeight) })
+        setSize({ width: Math.max(clientX - rect.left, minWidth), height: Math.max(clientY - rect.top, minHeight) })
       }
-      if (isDragging) { setPos({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y }); }
+      if (isDragging) { 
+        setPos({ x: clientX - dragStart.x, y: clientY - dragStart.y }); 
+      }
     }
-    const handleMouseUp = () => { setIsResizing(false); setIsDragging(false); }
-    if (isResizing || isDragging) { window.addEventListener('mousemove', handleMouseMove); window.addEventListener('mouseup', handleMouseUp); }
-    return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); }
-  }, [isResizing, isDragging, dragStart, minWidth, minHeight])
+    const handleEnd = () => { setIsResizing(false); setIsDragging(false); }
+    
+    if (isResizing || isDragging) { 
+      window.addEventListener('mousemove', handleMove); 
+      window.addEventListener('mouseup', handleEnd);
+      window.addEventListener('touchmove', handleMove, { passive: false });
+      window.addEventListener('touchend', handleEnd);
+    }
+    return () => { 
+      window.removeEventListener('mousemove', handleMove); 
+      window.removeEventListener('mouseup', handleEnd); 
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchend', handleEnd);
+    }
+  }, [isResizing, isDragging, dragStart, minWidth, minHeight, isMobile])
 
   return (
     <div ref={windowRef} className="win-outset flex flex-col shadow-xl absolute select-none overflow-hidden" style={{ width: size.width, height: size.height, left: pos.x, top: pos.y, zIndex }}>
-      <div className="title-bar cursor-default active:cursor-grabbing flex-none" onMouseDown={startDragging}>
+      <div className="title-bar cursor-default active:cursor-grabbing flex-none" onMouseDown={startDragging} onTouchStart={startDragging}>
         <div className="flex items-center gap-2"><span className="text-sm leading-none">{icon}</span><span className="text-xs font-bold truncate">{title}</span></div>
         <div className="flex gap-1">
           <button className="win-button !p-0 w-4 h-4 flex items-center justify-center font-bold">_</button>
@@ -197,19 +228,19 @@ function App() {
   return (
     <div className="h-full flex flex-col overflow-hidden relative" style={{ backgroundColor: wallpaper }}>
       {/* Desktop Area */}
-      <div className="flex-1 relative p-4 overflow-hidden" onClick={() => { setStartMenuOpen(false); if (shutDownPhase === 1) setShutDownPhase(0); }}>
-        <div className="flex flex-col gap-6 h-full flex-wrap content-start">
-          <div className="flex flex-col items-center gap-1 cursor-pointer w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('portfolio', true); }}>
-            <div className="p-1 group-hover:bg-blue-900/30 text-3xl">📇</div>
-            <span className="text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Portfolio</span>
+      <div className="flex-1 relative p-2 md:p-4 overflow-hidden" onClick={() => { setStartMenuOpen(false); if (shutDownPhase === 1) setShutDownPhase(0); }}>
+        <div className="flex flex-col gap-4 md:gap-6 h-full flex-wrap content-start">
+          <div className="flex flex-col items-center gap-1 cursor-pointer w-14 md:w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('portfolio', true); }}>
+            <div className="p-1 group-hover:bg-blue-900/30 text-2xl md:text-3xl">📇</div>
+            <span className="text-[9px] md:text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Portfolio</span>
           </div>
-          <div className="flex flex-col items-center gap-1 cursor-pointer w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('contact', true); }}>
-            <div className="p-1 group-hover:bg-blue-900/30 text-3xl">📞</div>
-            <span className="text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Contact</span>
+          <div className="flex flex-col items-center gap-1 cursor-pointer w-14 md:w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('contact', true); }}>
+            <div className="p-1 group-hover:bg-blue-900/30 text-2xl md:text-3xl">📞</div>
+            <span className="text-[9px] md:text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Contact</span>
           </div>
-          <div className="flex flex-col items-center gap-1 cursor-pointer w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('resume', true); }}>
-            <div className="p-1 group-hover:bg-blue-900/30 text-3xl">📥</div>
-            <span className="text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Resume.pdf</span>
+          <div className="flex flex-col items-center gap-1 cursor-pointer w-14 md:w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('resume', true); }}>
+            <div className="p-1 group-hover:bg-blue-900/30 text-2xl md:text-3xl">📥</div>
+            <span className="text-[9px] md:text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Resume.pdf</span>
           </div>
         </div>
 
