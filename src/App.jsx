@@ -200,10 +200,8 @@ function App() {
       <div className="flex-1 relative p-4 overflow-hidden" onClick={() => { setStartMenuOpen(false); if (shutDownPhase === 1) setShutDownPhase(0); }}>
         <div className="flex flex-col gap-6 h-full flex-wrap content-start">
           <div className="flex flex-col items-center gap-1 cursor-pointer w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('portfolio', true); }}>
-            <div className="p-1 group-hover:bg-blue-900/30 w-12 h-12 flex items-center justify-center">
-              <img src="/profile_logo.png" className="w-10 h-10 object-contain" alt="Logo" />
-            </div>
-            <span className="text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Surya Narayan</span>
+            <div className="p-1 group-hover:bg-blue-900/30 text-3xl">📇</div>
+            <span className="text-[10px] text-white text-center px-1 leading-tight group-hover:bg-[#000080] group-hover:outline-dotted group-hover:outline-1">Portfolio</span>
           </div>
           <div className="flex flex-col items-center gap-1 cursor-pointer w-16 group" onClick={(e) => { e.stopPropagation(); toggleWindow('contact', true); }}>
             <div className="p-1 group-hover:bg-blue-900/30 text-3xl">📞</div>
@@ -247,13 +245,7 @@ function App() {
 
         {/* Portfolio Window */}
         {windows.portfolio && (
-          <Window 
-            title="Surya Narayan" 
-            icon={<img src="/profile_logo.png" className="w-4 h-4 object-contain inline-block" alt="logo" />} 
-            initialWidth={720} 
-            initialHeight={480} 
-            onClose={() => toggleWindow('portfolio', false)}
-          >
+          <Window title="Surya Narayan - Portfolio" icon="📇" initialWidth={720} initialHeight={480} onClose={() => toggleWindow('portfolio', false)}>
             <div className="space-y-4">
               <header className="flex justify-between items-end border-b border-gray-300 pb-2">
                 <div><h1 className="text-xl font-black uppercase italic">Surya Narayan</h1><p className="text-blue-800 font-bold text-xs">AI Engineer</p></div>
@@ -396,7 +388,7 @@ function App() {
             <div className="w-6 bg-[#808080] flex items-end justify-center py-2"><span className="text-white font-bold [writing-mode:vertical-lr] rotate-180 uppercase text-[10px] tracking-widest">Windows 95</span></div>
             <div className="flex-1 bg-[#c0c0c0] py-1 shadow-inner">
               {[
-                { icon: <img src="/profile_logo.png" className="w-5 h-5 object-contain" alt="logo" />, name: 'Surya Narayan', win: 'portfolio' },
+                { icon: '📇', name: 'Portfolio', win: 'portfolio' },
                 { icon: '📥', name: 'Resume', win: 'resume' },
                 { icon: '📞', name: 'Contact', win: 'contact' },
                 { icon: '🎮', name: 'Games', win: 'games' },
@@ -423,20 +415,7 @@ function App() {
         </button>
         <div className="w-[2px] h-6 bg-gray-400 mx-1 border-r border-white"></div>
         <div className="flex-1 flex gap-1 h-full py-1 overflow-hidden">
-          {Object.entries(windows).map(([name, val]) => (val && typeof val === 'boolean' && 
-            <div 
-              key={name} 
-              onClick={() => toggleWindow(name, true)} 
-              className="win-inset !bg-[#c0c0c0] flex items-center px-3 text-[11px] font-bold w-28 h-full border-t-black border-l-black border-r-white border-b-white truncate cursor-pointer active:pt-1 active:pl-4 transition-all"
-            >
-              {name === 'portfolio' ? (
-                <div className="flex items-center gap-1">
-                  <img src="/profile_logo.png" className="w-3 h-3 object-contain" alt="logo" />
-                  <span>Surya Narayan</span>
-                </div>
-              ) : name.charAt(0).toUpperCase() + name.slice(1)}
-            </div>
-          ))}
+          {Object.entries(windows).map(([name, val]) => (val && typeof val === 'boolean' && <div key={name} onClick={() => toggleWindow(name, true)} className="win-inset !bg-[#c0c0c0] flex items-center px-3 text-[11px] font-bold w-28 h-full border-t-black border-l-black border-r-white border-b-white truncate cursor-pointer active:pt-1 active:pl-4 transition-all">{name === 'portfolio' ? '📇 Surya Narayan' : name.charAt(0).toUpperCase() + name.slice(1)}</div>))}
         </div>
         {showClock && <div className="win-inset px-3 h-8 flex items-center gap-3 text-xs bg-[#c0c0c0] shrink-0 shadow-inner"><span>🔊</span><span className="font-bold font-mono tracking-tighter">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>}
       </div>
