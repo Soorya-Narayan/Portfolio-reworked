@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --color-win-gray: #c0c0c0;
+  --color-win-blue: #000080;
+  --color-win-teal: #008080;
+  --color-win-shadow: #808080;
+  --color-win-dark: #000000;
+  --color-win-white: #ffffff;
+}
+
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #008080;
+    font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
+    color: black;
+    -webkit-font-smoothing: none;
+    image-rendering: pixelated;
+  }
+
+  #root {
+    height: 100%;
+  }
+
+  * {
+    box-sizing: border-box;
+    border-radius: 0 !important;
+  }
+}
+
+/* Classic Win98 Bevels */
+.win-outset {
+  background-color: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+}
+
+.win-inset {
+  background-color: #ffffff;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  box-shadow: inset 1px 1px 0px #000000, inset -1px -1px 0px #dfdfdf;
+}
+
+.win-button {
+  background-color: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #808080;
+  padding: 2px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.win-button:active {
+  border-top: 2px solid #000000;
+  border-left: 2px solid #000000;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  box-shadow: inset 1px 1px 0px #808080, inset -1px -1px 0px #dfdfdf;
+  padding: 3px 9px 1px 11px;
+}
+
+.title-bar {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  padding: 3px 3px 3px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
